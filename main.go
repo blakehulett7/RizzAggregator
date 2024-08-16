@@ -1,12 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/joho/godotenv"
 	"net/http"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -25,14 +23,4 @@ func JsonResponse(writer http.ResponseWriter, statusCode int, responseData []byt
 	writer.Header().Add("Content-Type", "application/json")
 	writer.WriteHeader(statusCode)
 	writer.Write(responseData)
-}
-
-func ReportHealth(writer http.ResponseWriter, request *http.Request) {
-	responseStruct := struct {
-		Status string `json:"status"`
-	}{
-		Status: "ok",
-	}
-	responseData, _ := json.Marshal(responseStruct)
-	JsonResponse(writer, 200, responseData)
 }
