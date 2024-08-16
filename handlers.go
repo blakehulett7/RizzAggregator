@@ -43,3 +43,7 @@ func (config apiConfig) AddUser(writer http.ResponseWriter, request *http.Reques
 	responseData, _ := json.Marshal(responseStruct)
 	JsonResponse(writer, 201, responseData)
 }
+
+func (config apiConfig) GetUser(writer http.ResponseWriter, request *http.Request) {
+
+}

@@ -32,6 +32,7 @@ func main() {
 	fmt.Println("Christ is King!, also the server is starting...")
 	mux.HandleFunc("GET /v1/healthz", ReportHealth)
 	mux.HandleFunc("POST /v1/users", config.AddUser)
+	mux.HandleFunc("GET /v1/users", config.GetUser)
 	server.ListenAndServe()
 }
 
