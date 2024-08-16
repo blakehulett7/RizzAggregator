@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/blakehulett7/RizzAggregator/internal/database"
@@ -33,17 +35,24 @@ func (config apiConfig) AddUser(writer http.ResponseWriter, request *http.Reques
 	createdAt := time.Now()
 	updatedAt := time.Now()
 	name := clientParams.Name
-	responseStruct := database.CreateUserParams{
+	userStruct := database.CreateUserParams{
 		ID:        id,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 		Name:      name,
 	}
-	config.Database.CreateUser(request.Context(), responseStruct)
-	responseData, _ := json.Marshal(responseStruct)
+	user, _ := config.Database.CreateUser(request.Context(), userStruct)
+	responseData, _ := json.Marshal(user)
 	JsonResponse(writer, 201, responseData)
 }
 
 func (config apiConfig) GetUser(writer http.ResponseWriter, request *http.Request) {
-
+	apiToken := request.Header.Get("Authorization")
+	apiKey, _ := strings.CutPrefix(apiToken, "ApiKey: ")
+	user, err := config.Database.GetUser(request.Context(), apiKey)
+	if err != nil {
+		fmt.Println(err)
+	}
+	responseData, _ := json.Marshal(user)
+	JsonResponse(writer, 200, responseData)
 }
