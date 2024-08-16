@@ -16,7 +16,9 @@ func main() {
 	dbURL := os.Getenv("CONN")
 	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
-		fmt.Errorf("Error opening database", err)
+		error := fmt.Errorf("Error opening database: %v", err)
+		fmt.Println(error)
+		return
 	}
 	dbQueries := database.New(db)
 	config := apiConfig{
@@ -29,7 +31,7 @@ func main() {
 	}
 	fmt.Println("Christ is King!, also the server is starting...")
 	mux.HandleFunc("GET /v1/healthz", ReportHealth)
-	mux.HandleFunc("POST /v1/healthz", config.AddUser)
+	mux.HandleFunc("POST /v1/users", config.AddUser)
 	server.ListenAndServe()
 }
 
