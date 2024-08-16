@@ -15,5 +15,6 @@ func main() {
 		Addr:    "localhost:" + os.Getenv("PORT"),
 		Handler: mux,
 	}
-	fmt.Println("Christ is King!")
+	fmt.Println("Christ is King!, also the server is starting...")
+	server.ListenAndServe()
 }
