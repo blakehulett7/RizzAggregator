@@ -10,3 +10,7 @@ RETURNING *;
 SELECT *
 FROM users
 WHERE api_key = $1;
+
+-- name: GetDB :many
+SELECT *
+FROM users;
