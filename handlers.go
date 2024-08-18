@@ -49,6 +49,7 @@ func (config apiConfig) AddUser(writer http.ResponseWriter, request *http.Reques
 func (config apiConfig) GetUser(writer http.ResponseWriter, request *http.Request) {
 	apiToken := request.Header.Get("Authorization")
 	apiKey, _ := strings.CutPrefix(apiToken, "ApiKey: ")
+	fmt.Println("apiKey: ", apiKey)
 	user, err := config.Database.GetUser(request.Context(), apiKey)
 	if err != nil {
 		fmt.Println(err)

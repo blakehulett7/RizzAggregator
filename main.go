@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 )
 
 func main() {
+	fmt.Println("Christ is King!, also the server is starting...")
 	godotenv.Load()
 	dbURL := os.Getenv("CONN")
 	db, err := sql.Open("postgres", dbURL)
@@ -29,7 +31,7 @@ func main() {
 		Addr:    "localhost:" + os.Getenv("PORT"),
 		Handler: mux,
 	}
-	fmt.Println("Christ is King!, also the server is starting...")
+	config.Database.NukeDB(context.Background())
 	mux.HandleFunc("GET /v1/healthz", ReportHealth)
 	mux.HandleFunc("POST /v1/users", config.AddUser)
 	mux.HandleFunc("GET /v1/users", config.GetUser)
