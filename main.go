@@ -35,6 +35,7 @@ func main() {
 	mux.HandleFunc("GET /v1/healthz", ReportHealth)
 	mux.HandleFunc("POST /v1/users", config.AddUser)
 	mux.HandleFunc("GET /v1/users", config.GetUser)
+	mux.HandleFunc("POST /v1/feeds", config.AddFeed)
 	server.ListenAndServe()
 }
 

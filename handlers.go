@@ -71,3 +71,11 @@ func Authenticator(config apiConfig, request *http.Request) (isAuthenticated boo
 	}
 	return true, user.ID
 }
+
+func (config apiConfig) AddFeed(writer http.ResponseWriter, request *http.Request) {
+	isAuthenticated, userID := Authenticator(config, request)
+	if !isAuthenticated {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+}
