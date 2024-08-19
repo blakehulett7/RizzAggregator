@@ -58,3 +58,15 @@ func (config apiConfig) GetUser(writer http.ResponseWriter, request *http.Reques
 	responseData, _ := json.Marshal(user)
 	JsonResponse(writer, 200, responseData)
 }
+
+func IsAuthenticated(config apiConfig, request *http.Request) (isAuthorized bool, userID string) {
+	apiToken := request.Header.Get("Authorization")
+	apiKey, _ := strings.CutPrefix(apiToken, "ApiKey ")
+	apiKey = strings.ReplaceAll(apiKey, "\"", "")
+	user, err := config.Database.GetUser(request.Context(), apiKey)
+	if err != nil {
+		fmt.Println(err)
+		return false, ""
+	}
+	return true, user.ID.String()
+}
