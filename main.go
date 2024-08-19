@@ -43,3 +43,8 @@ func JsonResponse(writer http.ResponseWriter, statusCode int, responseData []byt
 	writer.WriteHeader(statusCode)
 	writer.Write(responseData)
 }
+
+func JsonHeaderResponse(writer http.ResponseWriter, statusCode int) {
+	writer.Header().Add("Content-Type", "application/json")
+	writer.WriteHeader(statusCode)
+}

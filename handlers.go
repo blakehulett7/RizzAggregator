@@ -53,20 +53,21 @@ func (config apiConfig) GetUser(writer http.ResponseWriter, request *http.Reques
 	user, err := config.Database.GetUser(request.Context(), apiKey)
 	if err != nil {
 		fmt.Println(err)
+		JsonHeaderResponse(writer, 401)
 		return
 	}
 	responseData, _ := json.Marshal(user)
 	JsonResponse(writer, 200, responseData)
 }
 
-func IsAuthenticated(config apiConfig, request *http.Request) (isAuthorized bool, userID string) {
+func Authenticator(config apiConfig, request *http.Request) (isAuthenticated bool, userID uuid.UUID) {
 	apiToken := request.Header.Get("Authorization")
 	apiKey, _ := strings.CutPrefix(apiToken, "ApiKey ")
 	apiKey = strings.ReplaceAll(apiKey, "\"", "")
 	user, err := config.Database.GetUser(request.Context(), apiKey)
 	if err != nil {
 		fmt.Println(err)
-		return false, ""
+		return false, uuid.Nil
 	}
-	return true, user.ID.String()
+	return true, user.ID
 }
