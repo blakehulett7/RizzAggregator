@@ -22,4 +22,6 @@ echo &&
         http://localhost:8080/v1/users &&
     cat head.txt &&
     jq . response.json &&
+    rm ./response.json &&
+    rm ./head.txt &&
     echo
