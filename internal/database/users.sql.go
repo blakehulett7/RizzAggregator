@@ -96,11 +96,11 @@ func (q *Queries) GetUser(ctx context.Context, apiKey string) (User, error) {
 	return i, err
 }
 
-const nukeDB = `-- name: NukeDB :exec
+const nukeUsersDB = `-- name: NukeUsersDB :exec
 DELETE FROM users
 `
 
-func (q *Queries) NukeDB(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, nukeDB)
+func (q *Queries) NukeUsersDB(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, nukeUsersDB)
 	return err
 }

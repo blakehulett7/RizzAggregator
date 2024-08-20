@@ -1,4 +1,4 @@
--- name: NukeDB :exec
+-- name: NukeUsersDB :exec
 DELETE FROM users;
 
 -- name: CreateUser :one

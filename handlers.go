@@ -100,3 +100,13 @@ func (config apiConfig) AddFeed(writer http.ResponseWriter, request *http.Reques
 	responseData, _ := json.Marshal(feed)
 	JsonResponse(writer, 201, responseData)
 }
+
+func (config apiConfig) GetFeeds(writer http.ResponseWriter, request *http.Request) {
+	feedArray, err := config.Database.GetFeeds(request.Context())
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	responseData, _ := json.Marshal(feedArray)
+	JsonResponse(writer, 200, responseData)
+}

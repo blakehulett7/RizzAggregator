@@ -24,14 +24,13 @@ echo &&
     cat head.txt &&
     jq . response.json &&
     echo &&
-    echo 'Testing bad api key...' &&
+    echo 'Getting all feeds...' &&
     echo &&
     curl \
         --silent \
         --dump-header head.txt \
         --output response.json \
-        --header "Authorization: ApiKey 1111" \
-        --data @./payloadfeedtest.json \
+        --header "Authorization: ApiKey $apikey" \
         http://localhost:8080/v1/feeds &&
     cat head.txt &&
     jq . response.json &&

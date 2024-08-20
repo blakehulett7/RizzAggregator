@@ -31,11 +31,13 @@ func main() {
 		Addr:    "localhost:" + os.Getenv("PORT"),
 		Handler: mux,
 	}
-	config.Database.NukeDB(context.Background())
+	config.Database.NukeUsersDB(context.Background())
+	config.Database.NukeFeedsDB(context.Background())
 	mux.HandleFunc("GET /v1/healthz", ReportHealth)
 	mux.HandleFunc("POST /v1/users", config.AddUser)
 	mux.HandleFunc("GET /v1/users", config.GetUser)
 	mux.HandleFunc("POST /v1/feeds", config.AddFeed)
+	mux.HandleFunc("GET /v1/feeds", config.GetFeeds)
 	server.ListenAndServe()
 }
 
