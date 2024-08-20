@@ -142,7 +142,6 @@ func (config apiConfig) AddFeedFollow(writer http.ResponseWriter, request *http.
 		JsonHeaderResponse(writer, 400)
 		return
 	}
-	fmt.Println(clientParams.FeedID)
 	feedID, err := uuid.Parse(clientParams.FeedID)
 	if err != nil {
 		fmt.Println(err)

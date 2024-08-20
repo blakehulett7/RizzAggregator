@@ -21,6 +21,7 @@ echo &&
     cat head.txt &&
     jq . response.json &&
     feedID=$(jq .feed.ID response.json) &&
+    echo &&
     echo 'Posting a second user to the database...' &&
     echo &&
     curl \
