@@ -26,6 +26,7 @@ func ReportHealth(writer http.ResponseWriter, request *http.Request) {
 }
 
 func (config apiConfig) AddUser(writer http.ResponseWriter, request *http.Request) {
+	fmt.Println("Creating user..")
 	decoder := json.NewDecoder(request.Body)
 	clientParams := struct {
 		Name string `json:"name"`
@@ -73,6 +74,7 @@ func Authenticator(config apiConfig, request *http.Request) (isAuthenticated boo
 }
 
 func (config apiConfig) AddFeed(writer http.ResponseWriter, request *http.Request) {
+	fmt.Println("Calling feed creator...")
 	isAuthenticated, userID := Authenticator(config, request)
 	if !isAuthenticated {
 		JsonHeaderResponse(writer, 401)
@@ -127,6 +129,7 @@ func (config apiConfig) GetFeeds(writer http.ResponseWriter, request *http.Reque
 }
 
 func (config apiConfig) AddFeedFollow(writer http.ResponseWriter, request *http.Request) {
+	fmt.Println("I have been called!")
 	isAuthenticated, userID := Authenticator(config, request)
 	if !isAuthenticated {
 		JsonHeaderResponse(writer, 401)
@@ -136,10 +139,15 @@ func (config apiConfig) AddFeedFollow(writer http.ResponseWriter, request *http.
 	clientParams := struct {
 		FeedID string `json:"feed_id"`
 	}{}
-	decoder.Decode(&clientParams)
+	err := decoder.Decode(&clientParams)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(clientParams.FeedID)
 	feedID, err := uuid.Parse(clientParams.FeedID)
 	if err != nil {
 		fmt.Println(err)
+		fmt.Println("feed id not parsed", clientParams.FeedID)
 		return
 	}
 	userStruct := database.CreateFeedFollowsParams{
@@ -152,6 +160,7 @@ func (config apiConfig) AddFeedFollow(writer http.ResponseWriter, request *http.
 	feedFollow, err := config.Database.CreateFeedFollows(request.Context(), userStruct)
 	if err != nil {
 		fmt.Println(err)
+		fmt.Println("feed follow not created")
 		return
 	}
 	responseData, _ := json.Marshal(feedFollow)
