@@ -78,4 +78,25 @@ func (config apiConfig) AddFeed(writer http.ResponseWriter, request *http.Reques
 		JsonHeaderResponse(writer, 401)
 		return
 	}
+	decoder := json.NewDecoder(request.Body)
+	clientParams := struct {
+		Name string `json:"name"`
+		Url  string `json:"url"`
+	}{}
+	decoder.Decode(&clientParams)
+	userStruct := database.CreateFeedParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      clientParams.Name,
+		Url:       clientParams.Url,
+		UserID:    userID,
+	}
+	feed, err := config.Database.CreateFeed(request.Context(), userStruct)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	responseData, _ := json.Marshal(feed)
+	JsonResponse(writer, 201, responseData)
 }

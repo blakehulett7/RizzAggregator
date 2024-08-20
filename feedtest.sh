@@ -35,3 +35,4 @@ echo &&
         http://localhost:8080/v1/feeds &&
     cat head.txt &&
     jq . response.json &&
+    echo
