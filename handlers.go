@@ -97,7 +97,22 @@ func (config apiConfig) AddFeed(writer http.ResponseWriter, request *http.Reques
 		fmt.Println(err)
 		return
 	}
-	responseData, _ := json.Marshal(feed)
+	followStruct := database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    userID,
+		FeedID:    feed.ID,
+	}
+	autoFollow, err := config.Database.CreateFeedFollows(request.Context(), followStruct)
+	responseParams := struct {
+		Feed       database.Feed       `json:"feed"`
+		FeedFollow database.FeedFollow `json:"feed_follow"`
+	}{
+		feed,
+		autoFollow,
+	}
+	responseData, _ := json.Marshal(responseParams)
 	JsonResponse(writer, 201, responseData)
 }
 
@@ -109,4 +124,36 @@ func (config apiConfig) GetFeeds(writer http.ResponseWriter, request *http.Reque
 	}
 	responseData, _ := json.Marshal(feedArray)
 	JsonResponse(writer, 200, responseData)
+}
+
+func (config apiConfig) AddFeedFollow(writer http.ResponseWriter, request *http.Request) {
+	isAuthenticated, userID := Authenticator(config, request)
+	if !isAuthenticated {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+	decoder := json.NewDecoder(request.Body)
+	clientParams := struct {
+		FeedID string `json:"feed_id"`
+	}{}
+	decoder.Decode(&clientParams)
+	feedID, err := uuid.Parse(clientParams.FeedID)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	userStruct := database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    userID,
+		FeedID:    feedID,
+	}
+	feedFollow, err := config.Database.CreateFeedFollows(request.Context(), userStruct)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	responseData, _ := json.Marshal(feedFollow)
+	JsonResponse(writer, 201, responseData)
 }

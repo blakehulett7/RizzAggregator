@@ -8,10 +8,7 @@ echo &&
         --header "Content-Type: application/json" \
         --data @./payloadtest.json \
         http://localhost:8080/v1/users &&
-    cat head.txt &&
-    jq . response.json &&
     apikey=$(jq .ApiKey response.json) &&
-    echo &&
     echo 'Posting a feed to the database...' &&
     echo &&
     curl \
@@ -23,6 +20,7 @@ echo &&
         http://localhost:8080/v1/feeds &&
     cat head.txt &&
     jq . response.json &&
+    feedID=$(jq .ID response.json) &&
     echo &&
     echo 'Testing bad api key...' &&
     echo &&
