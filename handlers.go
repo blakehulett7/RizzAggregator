@@ -212,3 +212,19 @@ func (config apiConfig) GetFeedFollows(writer http.ResponseWriter, request *http
 	}
 	JsonResponse(writer, 200, responseData)
 }
+
+func (config apiConfig) RunTests(writer http.ResponseWriter, request *http.Request) {
+	fetchQueue, err := config.Database.GetNextFeedsToFetch(request.Context(), 2)
+	if err != nil {
+		fmt.Println("couldn't update fetch queue...")
+		JsonHeaderResponse(writer, 400)
+		return
+	}
+	responseData, err := json.Marshal(fetchQueue)
+	if err != nil {
+		fmt.Println("couldn't marshal fetchArray...")
+		JsonHeaderResponse(writer, 400)
+		return
+	}
+	JsonResponse(writer, 200, responseData)
+}
