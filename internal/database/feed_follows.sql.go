@@ -63,10 +63,11 @@ func (q *Queries) DeleteFollow(ctx context.Context, arg DeleteFollowParams) erro
 
 const getFollows = `-- name: GetFollows :many
 SELECT id, created_at, updated_at, user_id, feed_id FROM feed_follows
+WHERE user_id = $1
 `
 
-func (q *Queries) GetFollows(ctx context.Context) ([]FeedFollow, error) {
-	rows, err := q.db.QueryContext(ctx, getFollows)
+func (q *Queries) GetFollows(ctx context.Context, userID uuid.UUID) ([]FeedFollow, error) {
+	rows, err := q.db.QueryContext(ctx, getFollows, userID)
 	if err != nil {
 		return nil, err
 	}

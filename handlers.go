@@ -189,3 +189,24 @@ func (config apiConfig) DeleteFeedFollow(writer http.ResponseWriter, request *ht
 	}
 	JsonHeaderResponse(writer, 200)
 }
+
+func (config apiConfig) GetFeedFollows(writer http.ResponseWriter, request *http.Request) {
+	isAuthenticated, userID := Authenticator(config, request)
+	if !isAuthenticated {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+	followsArray, err := config.Database.GetFollows(request.Context(), userID)
+	if err != nil {
+		fmt.Println(err)
+		JsonHeaderResponse(writer, 400)
+		return
+	}
+	responseData, err := json.Marshal(followsArray)
+	if err != nil {
+		fmt.Println(err)
+		JsonHeaderResponse(writer, 400)
+		return
+	}
+	JsonResponse(writer, 200, responseData)
+}

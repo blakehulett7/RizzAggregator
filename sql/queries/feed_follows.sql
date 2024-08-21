@@ -7,7 +7,8 @@ RETURNING *;
 DELETE FROM feed_follows;
 
 -- name: GetFollows :many
-SELECT * FROM feed_follows;
+SELECT * FROM feed_follows
+WHERE user_id = $1;
 
 -- name: DeleteFollow :exec
 DELETE FROM feed_follows

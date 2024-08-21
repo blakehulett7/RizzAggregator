@@ -40,6 +40,7 @@ func main() {
 	mux.HandleFunc("POST /v1/feeds", config.AddFeed)
 	mux.HandleFunc("GET /v1/feeds", config.GetFeeds)
 	mux.HandleFunc("POST /v1/feed_follows", config.AddFeedFollow)
+	mux.HandleFunc("GET /v1/feed_follows", config.GetFeedFollows)
 	mux.HandleFunc("DELETE /v1/feed_follows/{feedFollowID}", config.DeleteFeedFollow)
 	server.ListenAndServe()
 }
