@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -85,12 +86,13 @@ func (config apiConfig) AddFeed(writer http.ResponseWriter, request *http.Reques
 	}{}
 	decoder.Decode(&clientParams)
 	userStruct := database.CreateFeedParams{
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		Name:      clientParams.Name,
-		Url:       clientParams.Url,
-		UserID:    userID,
+		ID:            uuid.New(),
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
+		Name:          clientParams.Name,
+		Url:           clientParams.Url,
+		UserID:        userID,
+		LastFetchedAt: sql.NullTime{},
 	}
 	feed, err := config.Database.CreateFeed(request.Context(), userStruct)
 	if err != nil {
