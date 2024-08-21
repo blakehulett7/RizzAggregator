@@ -164,3 +164,28 @@ func (config apiConfig) AddFeedFollow(writer http.ResponseWriter, request *http.
 	responseData, _ := json.Marshal(feedFollow)
 	JsonResponse(writer, 201, responseData)
 }
+
+func (config apiConfig) DeleteFeedFollow(writer http.ResponseWriter, request *http.Request) {
+	isAuthenticated, userID := Authenticator(config, request)
+	if !isAuthenticated {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+	feedFollowString := request.PathValue("feedFollowID")
+	feedFollowString = strings.ReplaceAll(feedFollowString, "\"", "")
+	feedFollowID, err := uuid.Parse(feedFollowString)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	params := database.DeleteFollowParams{
+		ID:     feedFollowID,
+		UserID: userID,
+	}
+	err = config.Database.DeleteFollow(request.Context(), params)
+	if err != nil {
+		fmt.Println(err)
+		JsonHeaderResponse(writer, 400)
+	}
+	JsonHeaderResponse(writer, 200)
+}

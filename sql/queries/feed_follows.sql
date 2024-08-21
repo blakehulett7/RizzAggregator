@@ -8,3 +8,8 @@ DELETE FROM feed_follows;
 
 -- name: GetFollows :many
 SELECT * FROM feed_follows;
+
+-- name: DeleteFollow :exec
+DELETE FROM feed_follows
+WHERE id = $1
+AND user_id = $2;
