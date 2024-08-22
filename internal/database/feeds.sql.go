@@ -124,6 +124,33 @@ func (q *Queries) GetNextFeedsToFetch(ctx context.Context, limit int32) ([]Feed,
 	return items, nil
 }
 
+const markFeedFetched = `-- name: MarkFeedFetched :one
+UPDATE feeds
+    SET updated_at = $2, last_fetched_at = $2
+    WHERE id = $1
+    RETURNING id, created_at, updated_at, name, url, user_id, last_fetched_at
+`
+
+type MarkFeedFetchedParams struct {
+	ID        uuid.UUID
+	UpdatedAt time.Time
+}
+
+func (q *Queries) MarkFeedFetched(ctx context.Context, arg MarkFeedFetchedParams) (Feed, error) {
+	row := q.db.QueryRowContext(ctx, markFeedFetched, arg.ID, arg.UpdatedAt)
+	var i Feed
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Url,
+		&i.UserID,
+		&i.LastFetchedAt,
+	)
+	return i, err
+}
+
 const nukeFeedsDB = `-- name: NukeFeedsDB :exec
 DELETE FROM feeds
 `

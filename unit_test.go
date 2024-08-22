@@ -15,7 +15,6 @@ import (
 )
 
 func OpenDB() apiConfig {
-	fmt.Println("Christ is King!, also the test is starting...")
 	godotenv.Load()
 	dbURL := os.Getenv("CONN")
 	db, err := sql.Open("postgres", dbURL)
@@ -103,6 +102,7 @@ func (config apiConfig) CreateSampleFeeds() []database.Feed {
 }
 
 func TestUpdateFetchQueue(t *testing.T) {
+	fmt.Println("Christ is King!, also the test is starting...")
 	config := OpenDB()
 	defer config.Database.NukeUsersDB(context.Background())
 	defer config.Database.NukeFeedsDB(context.Background())
@@ -120,4 +120,38 @@ func TestUpdateFetchQueue(t *testing.T) {
 		t.Fatal("Failed to update fetch queue 2")
 	}
 	fmt.Println("Successfully updated fetch queues!")
+}
+
+func TestMarkFeedFetched(t *testing.T) {
+	config := OpenDB()
+	defer config.Database.NukeUsersDB(context.Background())
+	defer config.Database.NukeFeedsDB(context.Background())
+	feedArray := config.CreateSampleFeeds()
+	updatedFeed, err := config.Database.MarkFeedFetched(context.Background(), database.MarkFeedFetchedParams{
+		ID:        feedArray[0].ID,
+		UpdatedAt: time.Now(),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	resultArray := []database.Feed{feedArray[1], feedArray[2], feedArray[3], updatedFeed}
+	fetchQueue, err := config.Database.GetNextFeedsToFetch(context.Background(), 4)
+	if !reflect.DeepEqual(fetchQueue, resultArray) || err != nil {
+		t.Log("Err:", err)
+		t.Fatal("Failed to update feed's fetched and updated at fields...")
+	}
+	fmt.Println("Successfully updated feeds!")
+}
+
+func TestRizzProcessor(t *testing.T) {
+	rizzArray := []Rss{
+		FetchFeed("https://blog.boot.dev/index.xml"),
+		FetchFeed("https://wagslane.dev/index.xml"),
+		FetchFeed("https://www.dailywire.com/feeds/rss.xml"),
+		FetchFeed("https://www.mtggoldfish.com/feed"),
+	}
+	for idx, rizz := range rizzArray {
+		fmt.Println("\nShowing rizz", idx)
+		ProcessRizz(rizz)
+	}
 }
