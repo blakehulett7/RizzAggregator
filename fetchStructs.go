@@ -30,9 +30,44 @@ type Rss struct {
 			Link  string `xml:"link"`
 			Title string `xml:"title"`
 		} `xml:"image"`
-		Items []Item `xml:"item"`
+		Item []struct {
+			Text        string `xml:",chardata"`
+			Title       string `xml:"title"`
+			Link        string `xml:"link"`
+			Creator     string `xml:"creator"`
+			Description string `xml:"description"`
+			Encoded     string `xml:"encoded"`
+			Guid        struct {
+				Text        string `xml:",chardata"`
+				IsPermaLink string `xml:"isPermaLink,attr"`
+			} `xml:"guid"`
+			PubDate   string `xml:"pubDate"`
+			Enclosure struct {
+				Text string `xml:",chardata"`
+				URL  string `xml:"url,attr"`
+			} `xml:"enclosure"`
+		} `xml:"item"`
 	} `xml:"channel"`
-	Entries []Entry `xml:"entry"`
+	Entry []struct {
+		Text      string `xml:",chardata"`
+		ID        string `xml:"id"`
+		Published string `xml:"published"`
+		Updated   string `xml:"updated"`
+		Link      struct {
+			Text string `xml:",chardata"`
+			Rel  string `xml:"rel,attr"`
+			Type string `xml:"type,attr"`
+			Href string `xml:"href,attr"`
+		} `xml:"link"`
+		URL     string `xml:"url"`
+		Title   string `xml:"title"`
+		Summary string `xml:"summary"`
+		Content string `xml:"content"`
+		Author  struct {
+			Text string `xml:",chardata"`
+			Name string `xml:"name"`
+		} `xml:"author"`
+	} `xml:"entry"`
 }
 
 type Item struct {
@@ -51,37 +86,4 @@ type Item struct {
 		Text string `xml:",chardata"`
 		URL  string `xml:"url,attr"`
 	} `xml:"enclosure"`
-}
-
-type Entry struct {
-	Text      string `xml:",chardata"`
-	ID        string `xml:"id"`
-	Published string `xml:"published"`
-	Updated   string `xml:"updated"`
-	Link      struct {
-		Text string `xml:",chardata"`
-		Rel  string `xml:"rel,attr"`
-		Type string `xml:"type,attr"`
-		Href string `xml:"href,attr"`
-	} `xml:"link"`
-	URL     string `xml:"url"`
-	Title   string `xml:"title"`
-	Summary string `xml:"summary"`
-	Content string `xml:"content"`
-	Author  struct {
-		Text string `xml:",chardata"`
-		Name string `xml:"name"`
-	} `xml:"author"`
-}
-
-type post interface {
-	GetTitle() string
-}
-
-func (item Item) GetTitle() string {
-	return item.Title
-}
-
-func (entry Entry) GetTitle() string {
-	return entry.Title
 }

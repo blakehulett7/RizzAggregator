@@ -24,18 +24,19 @@ func FetchFeed(url string) Rss {
 		fmt.Println(err)
 		return Rss{}
 	}
+	fmt.Println(rss)
 	return rss
 }
 
 func ProcessRizz(rizzStruct Rss) {
-	postArray := []post{}
-	for _, post := range rizzStruct.Channel.Items {
-		postArray = append(postArray, post)
+	titleArray := []string{}
+	for _, post := range rizzStruct.Channel.Item {
+		titleArray = append(titleArray, post.Title)
 	}
-	for _, post := range rizzStruct.Entries {
-		postArray = append(postArray, post)
+	for _, post := range rizzStruct.Entry {
+		titleArray = append(titleArray, post.Title)
 	}
-	for _, post := range postArray {
-		fmt.Println(post.GetTitle())
+	for _, post := range titleArray {
+		fmt.Println(post)
 	}
 }
