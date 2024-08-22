@@ -46,19 +46,22 @@ func ProcessRizz(rizzStruct Rss) {
 }
 
 func (config apiConfig) WorkTheRizz() {
-	var waitGroup sync.WaitGroup
-	fetchesAtOnce := 3
-	waitGroup.Add(fetchesAtOnce)
-	fmt.Printf("Adding next %v feeds to queue...\n", fetchesAtOnce)
-	fetchQueue, err := config.Database.GetNextFeedsToFetch(context.Background(), int32(fetchesAtOnce))
-	if err != nil {
-		fmt.Println(err)
-		return
+	for {
+		var waitGroup sync.WaitGroup
+		fetchesAtOnce := 3
+		waitGroup.Add(fetchesAtOnce)
+		fmt.Printf("Adding next %v feeds to queue...\n", fetchesAtOnce)
+		fetchQueue, err := config.Database.GetNextFeedsToFetch(context.Background(), int32(fetchesAtOnce))
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		for _, feed := range fetchQueue {
+			go UpdateFeed(feed, config, &waitGroup)
+		}
+		waitGroup.Wait()
+		time.Sleep(time.Second * 60)
 	}
-	for _, feed := range fetchQueue {
-		go UpdateFeed(feed, config, &waitGroup)
-	}
-	waitGroup.Wait()
 }
 
 func UpdateFeed(feed database.Feed, config apiConfig, waitGroup *sync.WaitGroup) {
