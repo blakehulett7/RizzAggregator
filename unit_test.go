@@ -143,15 +143,10 @@ func TestMarkFeedFetched(t *testing.T) {
 	fmt.Println("Successfully updated feeds!")
 }
 
-func TestRizzProcessor(t *testing.T) {
-	rizzArray := []Rss{
-		FetchFeed("https://blog.boot.dev/index.xml"),
-		FetchFeed("https://wagslane.dev/index.xml"),
-		FetchFeed("https://www.dailywire.com/feeds/rss.xml"),
-		FetchFeed("https://www.mtggoldfish.com/feed"),
-	}
-	for idx, rizz := range rizzArray {
-		fmt.Println("\nShowing rizz", idx)
-		ProcessRizz(rizz)
-	}
+func TestRizzWorker(t *testing.T) {
+	config := OpenDB()
+	defer config.Database.NukeUsersDB(context.Background())
+	defer config.Database.NukeFeedsDB(context.Background())
+	config.CreateSampleFeeds()
+	config.WorkTheRizz()
 }

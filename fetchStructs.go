@@ -1,14 +1,11 @@
 package main
 
-import "encoding/xml"
-
 type Rss struct {
-	XMLName xml.Name `xml:"rss"`
-	Text    string   `xml:",chardata"`
-	Version string   `xml:"version,attr"`
-	Atom    string   `xml:"atom,attr"`
-	Dc      string   `xml:"dc,attr"`
-	Content string   `xml:"content,attr"`
+	Text    string `xml:",chardata"`
+	Version string `xml:"version,attr"`
+	Atom    string `xml:"atom,attr"`
+	Dc      string `xml:"dc,attr"`
+	Content string `xml:"content,attr"`
 	Channel struct {
 		Text string `xml:",chardata"`
 		Link struct {
