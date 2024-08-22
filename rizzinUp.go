@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/blakehulett7/RizzAggregator/internal/database"
@@ -45,25 +46,32 @@ func ProcessRizz(rizzStruct Rss) {
 }
 
 func (config apiConfig) WorkTheRizz() {
+	var waitGroup sync.WaitGroup
 	fetchesAtOnce := 3
+	waitGroup.Add(fetchesAtOnce)
 	fmt.Printf("Adding next %v feeds to queue...\n", fetchesAtOnce)
 	fetchQueue, err := config.Database.GetNextFeedsToFetch(context.Background(), int32(fetchesAtOnce))
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("Fetch Queue: ")
 	for _, feed := range fetchQueue {
-		go FetchFeed(feed.Url)
+		go UpdateFeed(feed, config, &waitGroup)
 	}
+	waitGroup.Wait()
 }
 
-func UpdateFeed(feed database.Feed, config apiConfig) {
+func UpdateFeed(feed database.Feed, config apiConfig, waitGroup *sync.WaitGroup) {
+	defer waitGroup.Done()
 	fmt.Println("Fetching rizz from:", feed.Url)
+	fmt.Println("")
 	rss := FetchFeed(feed.Url)
 	fmt.Println("Processing rizz returned from:", feed.Url)
+	fmt.Println("")
 	ProcessRizz(rss)
+	fmt.Println("")
 	fmt.Println("Updating last fetched at and updated at for", feed.Url, "feed...")
+	fmt.Println("")
 	config.Database.MarkFeedFetched(context.Background(), database.MarkFeedFetchedParams{
 		ID:        feed.ID,
 		UpdatedAt: time.Now(),
