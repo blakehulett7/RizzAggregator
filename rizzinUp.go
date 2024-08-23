@@ -49,12 +49,11 @@ func (config apiConfig) WorkTheRizz() {
 	for {
 		var waitGroup sync.WaitGroup
 		fetchesAtOnce := 3
-		waitGroup.Add(fetchesAtOnce)
 		fmt.Printf("Adding next %v feeds to queue...\n", fetchesAtOnce)
 		fetchQueue, err := config.Database.GetNextFeedsToFetch(context.Background(), int32(fetchesAtOnce))
+		waitGroup.Add(len(fetchQueue))
 		if err != nil {
 			fmt.Println(err)
-			return
 		}
 		for _, feed := range fetchQueue {
 			go UpdateFeed(feed, config, &waitGroup)

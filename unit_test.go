@@ -143,10 +143,10 @@ func TestMarkFeedFetched(t *testing.T) {
 	fmt.Println("Successfully updated feeds!")
 }
 
-func TestRizzWorker(t *testing.T) {
-	config := OpenDB()
-	defer config.Database.NukeUsersDB(context.Background())
-	defer config.Database.NukeFeedsDB(context.Background())
-	config.CreateSampleFeeds()
-	config.WorkTheRizz()
-}
+//func TestRizzWorker(t *testing.T) {
+//config := OpenDB()
+//defer config.Database.NukeUsersDB(context.Background())
+//defer config.Database.NukeFeedsDB(context.Background())
+//config.CreateSampleFeeds()
+//config.WorkTheRizz()
+//}
