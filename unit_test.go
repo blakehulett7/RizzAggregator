@@ -106,6 +106,7 @@ func TestUpdateFetchQueue(t *testing.T) {
 	config := OpenDB()
 	defer config.Database.NukeUsersDB(context.Background())
 	defer config.Database.NukeFeedsDB(context.Background())
+	defer config.Database.NukeFeedFollowsDB(context.Background())
 	feedArray := config.CreateSampleFeeds()
 	result1 := []database.Feed{feedArray[0], feedArray[1]}
 	result2 := []database.Feed{feedArray[0], feedArray[1], feedArray[2]}
@@ -126,6 +127,7 @@ func TestMarkFeedFetched(t *testing.T) {
 	config := OpenDB()
 	defer config.Database.NukeUsersDB(context.Background())
 	defer config.Database.NukeFeedsDB(context.Background())
+	defer config.Database.NukeFeedFollowsDB(context.Background())
 	feedArray := config.CreateSampleFeeds()
 	updatedFeed, err := config.Database.MarkFeedFetched(context.Background(), database.MarkFeedFetchedParams{
 		ID:        feedArray[0].ID,
@@ -143,10 +145,15 @@ func TestMarkFeedFetched(t *testing.T) {
 	fmt.Println("Successfully updated feeds!")
 }
 
-//func TestRizzWorker(t *testing.T) {
-//config := OpenDB()
-//defer config.Database.NukeUsersDB(context.Background())
-//defer config.Database.NukeFeedsDB(context.Background())
-//config.CreateSampleFeeds()
-//config.WorkTheRizz()
-//}
+func TestGetPostsByUser(t *testing.T) {
+	config := OpenDB()
+	defer config.Database.NukeUsersDB(context.Background())
+	defer config.Database.NukeFeedsDB(context.Background())
+	defer config.Database.NukeFeedFollowsDB(context.Background())
+}
+
+func TestManual(t *testing.T) {
+	config := OpenDB()
+	defer config.Database.NukeUsersDB(context.Background())
+	fmt.Println(CreateSampleUsers(config))
+}
