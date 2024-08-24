@@ -212,3 +212,26 @@ func (config apiConfig) GetFeedFollows(writer http.ResponseWriter, request *http
 	}
 	JsonResponse(writer, 200, responseData)
 }
+
+func (config apiConfig) GetPosts(writer http.ResponseWriter, request *http.Request) {
+	isAuthenticated, userID := Authenticator(config, request)
+	if !isAuthenticated {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+	posts, err := config.Database.GetPosts(request.Context(), database.GetPostsParams{
+		UserID: userID,
+		Limit:  4,
+	})
+	if err != nil {
+		fmt.Println(err)
+		JsonHeaderResponse(writer, 400)
+	}
+	responseData, err := json.Marshal(posts)
+	if err != nil {
+		fmt.Println(err)
+		JsonHeaderResponse(writer, 400)
+		return
+	}
+	JsonResponse(writer, 200, responseData)
+}
