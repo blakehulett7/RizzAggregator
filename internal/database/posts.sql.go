@@ -26,8 +26,8 @@ type CreatePostParams struct {
 	Title       string
 	Url         string
 	Description sql.NullString
-	PublishedAt sql.NullTime
-	FeedID      uuid.NullUUID
+	PublishedAt time.Time
+	FeedID      uuid.UUID
 }
 
 func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (Post, error) {
@@ -100,4 +100,13 @@ func (q *Queries) GetPosts(ctx context.Context, arg GetPostsParams) ([]Post, err
 		return nil, err
 	}
 	return items, nil
+}
+
+const nukePostsDB = `-- name: NukePostsDB :exec
+DELETE FROM posts
+`
+
+func (q *Queries) NukePostsDB(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, nukePostsDB)
+	return err
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -142,4 +143,31 @@ func CreateSampleFollows(config apiConfig, user1, user2, user3 database.User, fe
 		fmt.Println(err)
 	}
 	return []database.FeedFollow{follow1, follow2, follow3, follow4, follow5, follow6}
+}
+
+func CreateSamplePosts(config apiConfig, numPosts int, feeds ...database.Feed) []database.Post {
+	postArray := []database.Post{}
+	for idx, feed := range feeds {
+		for i := 1; i <= numPosts; i++ {
+			title := fmt.Sprintf("Title %v", i)
+			post, err := config.Database.CreatePost(context.Background(), database.CreatePostParams{
+				ID:        uuid.New(),
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+				Title:     title,
+				Url:       fmt.Sprintf("Url %v, %v", idx, i),
+				Description: sql.NullString{
+					String: fmt.Sprintf("Description %v", 1),
+					Valid:  true,
+				},
+				PublishedAt: time.Now(),
+				FeedID:      feed.ID,
+			})
+			if err != nil {
+				fmt.Printf("Error: %v happened on feed index: %v post number: %v", err, idx, i)
+			}
+			postArray = append(postArray, post)
+		}
+	}
+	return postArray
 }

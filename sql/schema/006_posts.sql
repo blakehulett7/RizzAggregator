@@ -6,8 +6,8 @@ CREATE TABLE posts (
     title TEXT NOT NULL,
     url TEXT UNIQUE NOT NULL,
     description TEXT,
-    published_at TIMESTAMP,
-    feed_id UUID,
+    published_at TIMESTAMP NOT NULL,
+    feed_id UUID NOT NULL,
     FOREIGN KEY(feed_id) REFERENCES feeds(id)
 );
 
