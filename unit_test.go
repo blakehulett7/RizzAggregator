@@ -155,5 +155,9 @@ func TestGetPostsByUser(t *testing.T) {
 func TestManual(t *testing.T) {
 	config := OpenDB()
 	defer config.Database.NukeUsersDB(context.Background())
-	fmt.Println(CreateSampleUsers(config))
+	defer config.Database.NukeFeedsDB(context.Background())
+	defer config.Database.NukeFeedFollowsDB(context.Background())
+	userArray := CreateSampleUsers(config)
+	fmt.Println(CreateSampleFeeds(config, userArray[0], userArray[1], userArray[2]))
+	fmt.Println(config.Database.GetFollows(context.Background(), userArray[0].ID))
 }
