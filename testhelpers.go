@@ -61,7 +61,7 @@ func CreateSampleFeeds(config apiConfig, user1, user2, user3 database.User) []da
 		UpdatedAt: time.Now(),
 		Name:      "Feed 2",
 		Url:       "Url2.com",
-		UserID:    user1.ID,
+		UserID:    user2.ID,
 	})
 	if err != nil {
 		fmt.Println(err)
@@ -72,43 +72,74 @@ func CreateSampleFeeds(config apiConfig, user1, user2, user3 database.User) []da
 		UpdatedAt: time.Now(),
 		Name:      "Feed 3",
 		Url:       "Url3.com",
-		UserID:    user1.ID,
-	})
-	if err != nil {
-		fmt.Println(err)
-	}
-	feed4, err := config.Database.CreateFeed(context.Background(), database.CreateFeedParams{
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		Name:      "Feed 4",
-		Url:       "Url4.com",
-		UserID:    user2.ID,
-	})
-	if err != nil {
-		fmt.Println(err)
-	}
-	feed5, err := config.Database.CreateFeed(context.Background(), database.CreateFeedParams{
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		Name:      "Feed 5",
-		Url:       "Url5.com",
-		UserID:    user2.ID,
-	})
-	if err != nil {
-		fmt.Println(err)
-	}
-	feed6, err := config.Database.CreateFeed(context.Background(), database.CreateFeedParams{
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		Name:      "Feed 6",
-		Url:       "Url6.com",
 		UserID:    user3.ID,
 	})
 	if err != nil {
 		fmt.Println(err)
 	}
-	return []database.Feed{feed1, feed2, feed3, feed4, feed5, feed6}
+	return []database.Feed{feed1, feed2, feed3}
+}
+
+func CreateSampleFollows(config apiConfig, user1, user2, user3 database.User, feed1, feed2, feed3 database.Feed) []database.FeedFollow {
+	follow1, err := config.Database.CreateFeedFollows(context.Background(), database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user1.ID,
+		FeedID:    feed1.ID,
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	follow2, err := config.Database.CreateFeedFollows(context.Background(), database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user1.ID,
+		FeedID:    feed2.ID,
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	follow3, err := config.Database.CreateFeedFollows(context.Background(), database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user1.ID,
+		FeedID:    feed3.ID,
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	follow4, err := config.Database.CreateFeedFollows(context.Background(), database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user2.ID,
+		FeedID:    feed1.ID,
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	follow5, err := config.Database.CreateFeedFollows(context.Background(), database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user2.ID,
+		FeedID:    feed2.ID,
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	follow6, err := config.Database.CreateFeedFollows(context.Background(), database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user3.ID,
+		FeedID:    feed3.ID,
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	return []database.FeedFollow{follow1, follow2, follow3, follow4, follow5, follow6}
 }

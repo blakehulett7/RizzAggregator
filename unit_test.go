@@ -158,6 +158,6 @@ func TestManual(t *testing.T) {
 	defer config.Database.NukeFeedsDB(context.Background())
 	defer config.Database.NukeFeedFollowsDB(context.Background())
 	userArray := CreateSampleUsers(config)
-	fmt.Println(CreateSampleFeeds(config, userArray[0], userArray[1], userArray[2]))
-	fmt.Println(config.Database.GetFollows(context.Background(), userArray[0].ID))
+	feedArray := CreateSampleFeeds(config, userArray[0], userArray[1], userArray[2])
+	fmt.Println(CreateSampleFollows(config, userArray[0], userArray[1], userArray[2], feedArray[0], feedArray[1], feedArray[2]))
 }
