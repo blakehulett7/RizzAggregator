@@ -150,6 +150,21 @@ func TestGetPostsByUser(t *testing.T) {
 	defer config.Database.NukeUsersDB(context.Background())
 	defer config.Database.NukeFeedsDB(context.Background())
 	defer config.Database.NukeFeedFollowsDB(context.Background())
+	defer config.Database.NukePostsDB(context.Background())
+	userArray := CreateSampleUsers(config)
+	feedArray := CreateSampleFeeds(config, userArray[0], userArray[1], userArray[2])
+	CreateSampleFollows(config, userArray[0], userArray[1], userArray[2], feedArray[0], feedArray[1], feedArray[2])
+	postArray := CreateSamplePosts(config, 3, feedArray...)
+	fetchedPosts, err := config.Database.GetPosts(context.Background(), database.GetPostsParams{
+		UserID: userArray[1].ID,
+		Limit:  4,
+	})
+	expectedResultArray := []database.Post{postArray[5], postArray[4], postArray[3], postArray[2]}
+	if !reflect.DeepEqual(fetchedPosts, expectedResultArray) || err != nil {
+		t.Log("Err:", err)
+		t.Fatal("Failed to get the appropriate posts...")
+	}
+	fmt.Println("Successfully got recent posts...")
 }
 
 func TestManual(t *testing.T) {
@@ -157,9 +172,4 @@ func TestManual(t *testing.T) {
 	defer config.Database.NukeUsersDB(context.Background())
 	defer config.Database.NukeFeedsDB(context.Background())
 	defer config.Database.NukeFeedFollowsDB(context.Background())
-	defer config.Database.NukePostsDB(context.Background())
-	userArray := CreateSampleUsers(config)
-	feedArray := CreateSampleFeeds(config, userArray[0], userArray[1], userArray[2])
-	CreateSampleFollows(config, userArray[0], userArray[1], userArray[2], feedArray[0], feedArray[1], feedArray[2])
-	fmt.Println(CreateSamplePosts(config, 3, feedArray...))
 }
