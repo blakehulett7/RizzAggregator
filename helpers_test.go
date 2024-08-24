@@ -4,11 +4,29 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/blakehulett7/RizzAggregator/internal/database"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 )
+
+func OpenDB() apiConfig {
+	godotenv.Load()
+	dbURL := os.Getenv("CONN")
+	db, err := sql.Open("postgres", dbURL)
+	if err != nil {
+		error := fmt.Errorf("Error opening database: %v", err)
+		fmt.Println(error)
+		return apiConfig{}
+	}
+	dbQueries := database.New(db)
+	config := apiConfig{
+		dbQueries,
+	}
+	return config
+}
 
 func CreateSampleUsers(config apiConfig) []database.User {
 	Blake, err := config.Database.CreateUser(context.Background(), database.CreateUserParams{
