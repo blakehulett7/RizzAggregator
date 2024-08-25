@@ -16,7 +16,7 @@ echo &&
         --dump-header head.txt \
         --output response.json \
         --header "Authorization: ApiKey $apikey" \
-        --data @./payloadfeedtest.json \
+        --data @./payloadfetchqueuetest2.json \
         http://localhost:8080/v1/feeds &&
     cat head.txt &&
     jq . response.json &&
