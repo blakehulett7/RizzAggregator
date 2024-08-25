@@ -34,6 +34,7 @@ func main() {
 	config.Database.NukeUsersDB(context.Background())
 	config.Database.NukeFeedsDB(context.Background())
 	config.Database.NukeFeedFollowsDB(context.Background())
+	config.Database.NukePostsDB(context.Background())
 	go config.WorkTheRizz()
 	mux.HandleFunc("GET /v1/healthz", ReportHealth)
 	mux.HandleFunc("POST /v1/users", config.AddUser)
